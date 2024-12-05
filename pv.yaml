@@ -1,0 +1,70 @@
+#Persistencia de servicios de grafana loki y prometheus
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-grafana
+  labels:
+    app: nfs-grafana
+  namespace: monitoring
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 30Gi 
+  accessModes:
+  - ReadWriteOnce 
+  nfs: 
+    path: "/grafana" 
+    server: nfs-server.nfs.svc.cluster.local
+    readOnly: false 
+  persistentVolumeReclaimPolicy: Retain 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-grafana
+  labels:
+    app: nfs-grafana
+  namespace: monitoring
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 30Gi
+  volumeName: pv-grafana
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-loki
+  labels:
+    app: nfs-loki
+  namespace: monitoring
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 30Gi 
+  accessModes:
+  - ReadWriteOnce 
+  nfs: 
+    path: "/nfsshare/loki" 
+    server: nfs-server.nfs.svc.cluster.local
+    readOnly: false 
+  persistentVolumeReclaimPolicy: Retain 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-loki
+  labels:
+    app: nfs-loki
+  namespace: monitoring
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 30Gi
+  volumeName: pv-loki 
